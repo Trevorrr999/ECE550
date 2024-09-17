@@ -8,7 +8,8 @@
 This simple ALU design includes a 32-bit adder which can function as an adder or a subtrctor.Through the control of input ctrl_ALUopcode, the mode can be switched between add or sub.The top design alu.v invokes many submodule units, which contain a 32_bit_adder unit and 32 mux_2_1 units. Specifically, the 32_bit_adder contains 4 adder_8bit_CSA, made up of half_adder, full_adder and mux_2_1.
 
 **Inputs and Outputs declaration**
-**Port Name**|**Input/output**|**Description** 
+|**Port Name**|**Input/output**|**Description**| 
+| ----------- | ----------- | ----------- |
 |data_operandA[31:0]|Input| data A operand Input|
 |data_operandB[31:0]|Input| data B operand Input|
 |ctrl_ALUopcode[4:0]|Input| ALU command code |
