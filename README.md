@@ -8,14 +8,14 @@
 This simple ALU design includes a 32-bit adder which can function as an adder or a subtrctor.Through the control of input ctrl_ALUopcode, the mode can be switched between add or sub.The top design alu.v invokes many submodule units, which contain a 32_bit_adder unit and 32 mux_2_1 units. Specifically, the 32_bit_adder contains 4 adder_8bit_CSA, made up of half_adder, full_adder and mux_2_1.
 
 **Inputs and Outputs declaration**
-**Port Name** **Input/output** **Description** 
+**Port Name**|**Input/output**|**Description** 
 |data_operandA[31:0]|Input| data A operand Input|
 |data_operandB[31:0]|Input| data B operand Input|
 |ctrl_ALUopcode[4:0]|Input| ALU command code |
-|ctrl_shiftmat[4:0]|Input|Shift amount for SLL and SRA operations|(NOT involved in this simple design)
+|ctrl_shiftmat[4:0]|Input|Shift amount for SLL and SRA operations(NOT involved in this simple design)|
 |data_result[31:0]|Output|Operation Result output|
-|isNotEqual|Output|Flag - two data are not equal in subtraction|(NOT involved in this simple design)
-|isLessThan|Output|Flag - dataA is less than dataB in subtraction|(NOT involved in this simple design)
+|isNotEqual|Output|Flag - two data are not equal in subtraction(NOT involved in this simple design)|
+|isLessThan|Output|Flag - dataA is less than dataB in subtraction(NOT involved in this simple design)|
 |overflow|Output|Flag - overflow when add or subtract|
 
 **Note:** ctrl_shiftmat[4:0],isNotEqual,isLessThan are not involved in this this simple design, each of these ports will be fullfilled in the futrue.
