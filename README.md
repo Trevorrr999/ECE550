@@ -50,6 +50,7 @@ assign out = sel ? A : B;
 ```
 ### adder_8bit_CSA:
 The adder_8_bit_CSA module is an 8-bit Carry Select Adder that computes the sum of two 8-bit inputs, A and B, along with a carry input, Cin. It employs two full adder arrays to calculate results for both carry scenarios (Cin = 1 and Cin = 0) and uses multiplexers to select the final sum and carry outputs based on the value of Cin. This design minimizes delay and enhances speed, making it suitable for use in digital circuits like Arithmetic Logic Units (ALUs).
+![image](https://github.com/user-attachments/assets/f57694b4-c0cb-4346-96fc-2479523843c3)
 
 ### adder_32_bit:
 The adder_32_bit module is a 32-bit adder that employs four 8-bit Carry Select Adder (CSA) instances to compute the sum of two 32-bit inputs, A and B, along with a carry input, Cin. The four 8-bit segments are connected in series, with the carry output of each lower segment serving as the carry input for the next higher segment. This design facilitates efficient carry propagation, minimizing overall delay.
