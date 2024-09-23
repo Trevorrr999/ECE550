@@ -268,4 +268,5 @@ assign data_result = (decode_ctrl_ALUopcode[0]|decode_ctrl_ALUopcode[1]) ? data_
 ```   
 ## Reference:
 [1] Carry Select Adder’s Principles and design (no date) www.zhihu.com. Available at: https://zhuanlan.zhihu.com/p/102207162 (Accessed: 16 September 2024). 
+[2] Younes, R. (n.d.). 03 - Digital Arithmetic.pdf. 
 
