@@ -217,6 +217,7 @@ assign isNotEqual = (decode_ctrl_ALUopcode[1]) ? (|data_result_add_or_sub)? 1 : 
 
 The isLessThan output port detects whether the input data_operandA is smaller than data_operandB during a subtraction operation. This process is relatively complex, as illustrated in the following figure.
 ![image](https://github.com/user-attachments/assets/c9dc5473-466f-449e-a26a-f0a735d95fae)
+
 The first step is to determine whether the ALU is in subtraction mode; if it is not, the isLessThan port should be set to 0. Next, check if the Overflow signal is 1. If it is, evaluate the sign bit of data_result: if the sign bit is 1, it indicates an overflow; otherwise, it indicates an underflow. In the case of an overflow, this means that data_operandA is smaller than data_operandB. If there is no overflow, check the sign bit of data_operandA. If the sign bit is 1, it indicates that data_operandA is smaller than data_operandB.
 ```Verilog code
 assign isLessThan = (decode_ctrl_ALUopcode[1]) ? (overflow ? (data_operandA[31] ? 1 : 0): data_result[31] ? 1 : 0): 0; 
