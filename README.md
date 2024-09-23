@@ -84,7 +84,7 @@ Compared to a standard design, this project also aims to implement overflow dete
 
 ### decoder_32:
 The 5-32 decoder converts a 5-bit binary input into one of 32 unique outputs, used for selectively activating an output. Its input range is from 00000 to 11111, corresponding to outputs Y0 to Y31, where only one output is high (1) and the others are low (0). In this design, the decoder_32 is used to converts ctrl_ALUopcode 5 bit inputs into 32 outputs, which is used to decide which result should be connect to the output data ports.
-```Verilog code(key part for creating inverted data)
+```Verilog code(key part)
 assign decode_ctrl_ALUopcode[0]  = ~ctrl_ALUopcode[4] & ~ctrl_ALUopcode[3] & ~ctrl_ALUopcode[2] & ~ctrl_ALUopcode[1] & ~ctrl_ALUopcode[0]; 
 assign decode_ctrl_ALUopcode[1]  = ~ctrl_ALUopcode[4] & ~ctrl_ALUopcode[3] & ~ctrl_ALUopcode[2] & ~ctrl_ALUopcode[1] &  ctrl_ALUopcode[0]; 
 assign decode_ctrl_ALUopcode[2]  = ~ctrl_ALUopcode[4] & ~ctrl_ALUopcode[3] & ~ctrl_ALUopcode[2] &  ctrl_ALUopcode[1] & ~ctrl_ALUopcode[0];
@@ -95,7 +95,7 @@ assign decode_ctrl_ALUopcode[2]  = ~ctrl_ALUopcode[4] & ~ctrl_ALUopcode[3] & ~ct
 ### sll:
 This 32-bit logical left shift (SLL) module in Verilog uses a structured approach to perform left shifts based on a 5-bit control signal (ctrl_shiftamt). The design consists of multiple generate for loops, each implementing 1-bit, 2-bit, 4-bit, 8-bit, and 16-bit shifts using 2-to-1 multiplexers, and each stage of shifting builds upon the previous one, ultimately allowing the module to produce the correct shifted output (data_result) based on the specified shift amount.
 ![image](https://github.com/user-attachments/assets/e423910b-bc8c-4cc0-9714-ebd88fb2bb9b)
-```Verilog code(key part for creating inverted data)
+```Verilog code(key part)
 // 1-bit shift
 for(a = 0; a<= width -1; a = a + 1)
 begin: unit_1_bit_shift
@@ -141,9 +141,65 @@ for(e = 0;e<= width - 1; e = e + 1)
           end        
  end
 …
-```   
+```
 
+### sra:
+The principle of the 32-bit arithmetic right shift (SRA) module is similar to that of the logical left shift (SLL). The main difference lies in the handling of the sign bit. During a right shift, the sign bit (most significant bit) is copied into the newly shifted-in position to maintain the consistency of the sign for negative numbers. As a result, for negative numbers, the output after shifting will remain negative.
+```Verilog code(key part)
+for(a = 0; a<= width -1; a = a + 1)
+    begin: unit_1_bit_shift
+        if(a == 5'd31)
+        begin
+            mux_2_1 u(
+                .A(1),
+                .B(data_operandA[a]),
+                .sel(ctrl_shiftamt[0]),
+                .out(temp0[a])
+            );
+        end
+        else
+        begin
+            mux_2_1 u(
+                .A(data_operandA[a+1]),
+                .B(data_operandA[a]),
+                .sel(ctrl_shiftamt[0]),
+                .out(temp0[a])
+            );
+        end
+    end
+```
 
+### Bitwise_and:
+The Bitwise AND operation is a fundamental binary operation that compares corresponding bits of two binary numbers, producing a new binary number where each bit is set to 1 only if both input bits are 1; otherwise, it is set to 0. In this design, a generate-for loop utilizes 32 AND gates to implement the Bitwise AND function for the inputs data_operandA and data_operandB.
+```Verilog code(key part)
+genvar i;
+generate 
+    for(i = 0; i <= width-1; i = i + 1)
+    begin: unit_and
+        and uint (
+            data_result[i],
+            data_operandA[i],
+            data_operandB[i]
+        );
+    end
+endgenerate
+```
+
+### Bitwise_or:
+The Bitwise OR operation is another fundamental binary operation that compares each corresponding bit of two binary numbers and produces a new binary number where each bit is set to 1 if at least one of the input bits is 1; otherwise, it is set to 0.
+```Verilog code(key part)
+genvar i;
+generate 
+    for(i = 0; i <= width-1; i = i + 1)
+    begin: unit_and
+        or uint (
+            data_result[i],
+            data_operandA[i],
+            data_operandB[i]
+        );
+    end
+endgenerate
+```
 ### alu:
 This simple ALU module performs arithmetic addition and subtraction operations on two 32-bit operands based on control signals. It handles both addition and subtraction, while also detecting overflow conditions.
 
