@@ -1,11 +1,11 @@
-# Project: simple alu design
+# Project: full alu design
 **Name:** Trevor(Yuzhe) Zhang 
 **NetID:** yz972
 **course:** ECE550D
-**date:** 9/16/2024
+**date:** 9/22/2024
 
 ## Project introduction:
-This simple ALU design includes a 32-bit adder which can function as an adder or a subtrctor.Through the control of input ctrl_ALUopcode, the mode can be switched between add or sub.The top design alu.v invokes many submodule units, which contain a 32_bit_adder unit and 32 mux_2_1 units. Specifically, the 32_bit_adder contains 4 adder_8bit_CSA, made up of half_adder, full_adder and mux_2_1.
+This ALU design includes essential functionalities, including addition and subtraction, logical left shift, arithmetic right shift, bitwise AND, and bitwise OR.Through the control of input ctrl_ALUopcode, the mode can be switched among these modes. Design also incorporates overflow detection and input data size comparison checks during addition and subtraction operations.The top design full_alu.v invokes many submodule units, which contain a 32_bit_adder unit, 32 mux_2_1 units, and etc.More detailed information is listed as follows.
 
 **Inputs and Outputs declaration**
 **Port Name**|**Input/output**|**Description**
@@ -13,15 +13,11 @@ This simple ALU design includes a 32-bit adder which can function as an adder or
 |data_operandA[31:0]|Input| data A operand Input|
 |data_operandB[31:0]|Input| data B operand Input|
 |ctrl_ALUopcode[4:0]|Input| ALU command code |
-|ctrl_shiftmat[4:0]|Input|Shift amount for SLL and SRA operations|(NOT involved in this simple design)
+|ctrl_shiftmat[4:0]|Input|Shift amount for SLL and SRA operations|
 |data_result[31:0]|Output|Operation Result output|
-|isNotEqual|Output|Flag - two data are not equal in subtraction|(NOT involved in this simple design)
-|isLessThan|Output|Flag - dataA is less than dataB in subtraction|(NOT involved in this simple design)
+|isNotEqual|Output|Flag - two data are not equal in subtraction|
+|isLessThan|Output|Flag - dataA is less than dataB in subtraction|
 |overflow|Output|Flag - overflow when add or subtract|
-
-**Note:** ctrl_shiftmat[4:0],isNotEqual,isLessThan are not involved in this this simple design, each of these ports will be fullfilled in the futrue.
-
-More detailed information is listed as follows.
 
 ## Contents:
 1. full_adder
@@ -32,7 +28,23 @@ More detailed information is listed as follows.
 
 4. adder_32_bit
 
-5. alu
+5. decoder_32
+
+6. SLL
+
+7. SRA
+
+8. Bitwise_and
+
+9. Bitwise_or
+
+10. overflow detection
+
+11. isEqual
+
+12. isLess     
+
+13. full_alu
 
 ### full_adder:
 Full adder contains the carry_in for 1-bit add operation. it computes the sum of 3 inputs and generates the result and carry_out to its outputs.
@@ -69,6 +81,21 @@ Compared to a standard design, this project also aims to implement overflow dete
             );        
         end
 ```
+
+### decoder_32:
+The 5-32 decoder converts a 5-bit binary input into one of 32 unique outputs, used for selectively activating an output. Its input range is from 00000 to 11111, corresponding to outputs Y0 to Y31, where only one output is high (1) and the others are low (0). In this design, the decoder_32 is used to converts ctrl_ALUopcode 5 bit inputs into 32 outputs, which is used to decide which result should be connect to the output data ports.
+```Verilog code(key part for creating inverted data)
+assign decode_ctrl_ALUopcode[0]  = ~ctrl_ALUopcode[4] & ~ctrl_ALUopcode[3] & ~ctrl_ALUopcode[2] & ~ctrl_ALUopcode[1] & ~ctrl_ALUopcode[0]; 
+assign decode_ctrl_ALUopcode[1]  = ~ctrl_ALUopcode[4] & ~ctrl_ALUopcode[3] & ~ctrl_ALUopcode[2] & ~ctrl_ALUopcode[1] &  ctrl_ALUopcode[0]; 
+assign decode_ctrl_ALUopcode[2]  = ~ctrl_ALUopcode[4] & ~ctrl_ALUopcode[3] & ~ctrl_ALUopcode[2] &  ctrl_ALUopcode[1] & ~ctrl_ALUopcode[0];
+…
+…
+```   
+
+### SLL:
+This 32-bit logical left shift (SLL) module in Verilog uses a structured approach to perform left shifts based on a 5-bit control signal (ctrl_shiftamt). The design consists of multiple generate for loops, each implementing 1-bit, 2-bit, 4-bit, 8-bit, and 16-bit shifts using 2-to-1 multiplexers, and each stage of shifting builds upon the previous one, ultimately allowing the module to produce the correct shifted output (data_result) based on the specified shift amount.
+
+
 ### alu:
 This simple ALU module performs arithmetic addition and subtraction operations on two 32-bit operands based on control signals. It handles both addition and subtraction, while also detecting overflow conditions.
 
@@ -109,7 +136,7 @@ As mentioned in the adder_32_bit section, this design intentionally reserves the
 ```Verilog code(key part)
 assign overflow =  Co^Co_1 ? 1 : 0;
 ```
-## Reference:
 
+## Reference:
 [1] Carry Select Adder’s Principles and design (no date) www.zhihu.com. Available at: https://zhuanlan.zhihu.com/p/102207162 (Accessed: 16 September 2024). 
 
