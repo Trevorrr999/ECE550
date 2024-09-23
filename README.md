@@ -92,10 +92,56 @@ assign decode_ctrl_ALUopcode[2]  = ~ctrl_ALUopcode[4] & ~ctrl_ALUopcode[3] & ~ct
 …
 ```   
 
-### SLL:
+### sll:
 This 32-bit logical left shift (SLL) module in Verilog uses a structured approach to perform left shifts based on a 5-bit control signal (ctrl_shiftamt). The design consists of multiple generate for loops, each implementing 1-bit, 2-bit, 4-bit, 8-bit, and 16-bit shifts using 2-to-1 multiplexers, and each stage of shifting builds upon the previous one, ultimately allowing the module to produce the correct shifted output (data_result) based on the specified shift amount.
 ![image](https://github.com/user-attachments/assets/e423910b-bc8c-4cc0-9714-ebd88fb2bb9b)
-
+```Verilog code(key part for creating inverted data)
+// 1-bit shift
+for(a = 0; a<= width -1; a = a + 1)
+begin: unit_1_bit_shift
+if(a == 0)
+begin
+    mux_2_1 u(
+        .A(0),
+        .B(data_operandA[a]),
+        .sel(ctrl_shiftamt[0]),
+        .out(temp0[a])
+    );
+end
+else
+begin
+    mux_2_1 u(
+        .A(data_operandA[a-1]),
+        .B(data_operandA[a]),
+        .sel(ctrl_shiftamt[0]),
+        .out(temp0[a])
+    );
+end
+end
+// 16-bit shift
+for(e = 0;e<= width - 1; e = e + 1)
+ begin: unit_16_bit_shift
+          if(e <= 15)
+          begin
+                mux_2_1 u(
+                         .A(0),
+                         .B(temp3[e]),
+                         .sel(ctrl_shiftamt[4]),
+                         .out(data_result[e])
+                );            
+          end
+          else
+          begin
+                mux_2_1 u(
+                         .A(temp3[e-16]),
+                         .B(temp3[e]),
+                         .sel(ctrl_shiftamt[4]),
+                         .out(data_result[e])
+                );            
+          end        
+ end
+…
+```   
 
 
 ### alu:
