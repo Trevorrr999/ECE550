@@ -40,7 +40,7 @@ This ALU design includes essential functionalities, including addition and subtr
 
 10. overflow detection
 
-11. isEqual
+11. isNotEqual
 
 12. isLess     
 
@@ -200,6 +200,24 @@ generate
     end
 endgenerate
 ```
+
+### the overflow detection:
+As mentioned in the adder_32_bit section, this design intentionally reserves the carry-out signal from the second most significant bit (MSB) for overflow detection. The overflow detection mechanism utilizes the carry-out signals from both the first and second MSBs. By employing an XOR gate, the design determines whether an overflow has occurred. If the carry-out signals from these two bits differ, it indicates that an overflow has happened during the arithmetic operation.
+```Verilog code(key part)
+assign overflow =  Co^Co_1 ? 1 : 0;
+```
+### isNotEqual:
+The isNotEqual output port detects whether the two inputs are the same during a subtraction operation. This functionality can be divided into two steps: First, if the operation is not in subtraction mode, it should generate a signal of 0. If it is in subtraction mode, a second check is performed to determine whether data_result is not equal to 0. If data_result is indeed not equal to 0, then isNotEqual should output 1; otherwise, it should output 0.
+To determine whether the result is equal to zero, a bitwise OR operation is performed on each bit of the 32-bit data_result. If the outcome of this operation is 1, it indicates that the input should not be zero.
+```Verilog code(key part)
+//judge IsNotEqual
+assign isNotEqual = (decode_ctrl_ALUopcode[1]) ? (|data_result_add_or_sub)? 1 : 0 : 0;
+```
+### isLess:
+
+The isLessThan output port detects whether the input data_operandA is smaller than data_operandB during a subtraction operation. This process is relatively complex, as illustrated in the following figure.
+![image](https://github.com/user-attachments/assets/6a54cacf-55ea-4155-bc09-a01b84c07214)
+
 ### alu:
 This simple ALU module performs arithmetic addition and subtraction operations on two 32-bit operands based on control signals. It handles both addition and subtraction, while also detecting overflow conditions.
 
@@ -235,11 +253,7 @@ To select data_valid_B, the design employs a 2-to-1 multiplexer (mux_2_1). The c
 
 Furthermore, ctrl_ALUopcode[0] is also connected to the carry-in (cin) of the 32_bit adder. When ctrl_ALUopcode[0] is 1, the calculation requires the two's complement of data_operandB, which is achieved by adding the inverted data and 1. By connecting ctrl_ALUopcode[0] to the carry-in, this design effectively resolves the requirement for two's complement in subtraction operations.
     
-#### the overflow detection:
-As mentioned in the adder_32_bit section, this design intentionally reserves the carry-out signal from the second most significant bit (MSB) for overflow detection. The overflow detection mechanism utilizes the carry-out signals from both the first and second MSBs. By employing an XOR gate, the design determines whether an overflow has occurred. If the carry-out signals from these two bits differ, it indicates that an overflow has happened during the arithmetic operation.
-```Verilog code(key part)
-assign overflow =  Co^Co_1 ? 1 : 0;
-```
+
 
 ## Reference:
 [1] Carry Select Adder’s Principles and design (no date) www.zhihu.com. Available at: https://zhuanlan.zhihu.com/p/102207162 (Accessed: 16 September 2024). 
