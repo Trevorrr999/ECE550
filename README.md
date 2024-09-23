@@ -223,10 +223,10 @@ The first step is to determine whether the ALU is in subtraction mode; if it is 
 assign isLessThan = (decode_ctrl_ALUopcode[1]) ? (overflow ? (data_operandA[31] ? 1 : 0): data_result[31] ? 1 : 0): 0; 
 ```
 ### alu:
-This simple ALU module performs arithmetic addition and subtraction operations on two 32-bit operands based on control signals. It handles both addition and subtraction, while also detecting overflow conditions.
+This ALU module performs arithmetic addition, subtraction, logical left shift, arithmetic right shift, bitwise AND, and bitwise OR operations on two 32-bit operands based on control signals.
 
-In this design, the least significant bit of ctrl_ALUopcode(ctrl_ALUopcode[0]) determines which operation the ALU will execute. In addition mode, the ALU directly adds data_operandA and data_operandB. In subtraction mode, the ALU calculates the difference by using the 2's complement of data_operandB, which involves inverting it and adding 1. This requires the use of inv_B (a wire holding the bitwise inversion of data_operandB) and data_valid_B (a wire that holds either the original or inverted version of data_operandB).
-```Verilog code(key part for creating inverted data)
+In this design, ctrl_ALUopcode determines which operation the ALU will execute. For example, the ALU directly adds data_operandA and data_operandB in addition mode; In subtraction mode, the ALU calculates the difference by using the 2's complement of data_operandB, which involves inverting it and adding 1.
+```Verilog code(key part)
    wire [31:0] temp_result1,temp_result2;
    //use to judge the overflow
    wire Co,Co_1;
@@ -239,7 +239,7 @@ In this design, the least significant bit of ctrl_ALUopcode(ctrl_ALUopcode[0]) d
 ```
 
 To select data_valid_B, the design employs a 2-to-1 multiplexer (mux_2_1). The ctrl_ALUopcode[0] is connected to the selection input of the multiplexer. When ctrl_ALUopcode[0] is 0, the original data_operandB is output; when it is 1, the inverted data is used for the calculation.
-```Verilog code(key part for creating inverted data)
+```Verilog code(key part)
    //use to choose the data involving the calculation
    genvar i;
    generate
@@ -256,9 +256,16 @@ To select data_valid_B, the design employs a 2-to-1 multiplexer (mux_2_1). The c
 ```   
 
 Furthermore, ctrl_ALUopcode[0] is also connected to the carry-in (cin) of the 32_bit adder. When ctrl_ALUopcode[0] is 1, the calculation requires the two's complement of data_operandB, which is achieved by adding the inverted data and 1. By connecting ctrl_ALUopcode[0] to the carry-in, this design effectively resolves the requirement for two's complement in subtraction operations.
-    
 
-
+The decoder plays a crucial role in determining which part of the ALU is involved in the calculation. Only one bit of the decoder's output can be activated for a specific ctrl_ALUopcode. Once the assigned output is activated, it selects which part's data_result should be loaded into the final data_result. This functionality ensures that the full ALU design meets its operational requirements.
+```Verilog code(key part)
+//decoder 
+    decoder_32 unit_decoder(
+        .ctrl_ALUopcode(ctrl_ALUopcode),
+        .decode_ctrl_ALUopcode(decode_ctrl_ALUopcode)
+    );
+assign data_result = (decode_ctrl_ALUopcode[0]|decode_ctrl_ALUopcode[1]) ? data_result_add_or_sub: (decode_ctrl_ALUopcode[2] ? data_result_bitwise_and : (decode_ctrl_ALUopcode[3] ? data_result_bitwise_or : (decode_ctrl_ALUopcode[4] ? data_result_sll : (decode_ctrl_ALUopcode[5] ? data_result_sra : 32'b0))));
+```   
 ## Reference:
 [1] Carry Select Adder’s Principles and design (no date) www.zhihu.com. Available at: https://zhuanlan.zhihu.com/p/102207162 (Accessed: 16 September 2024). 
 
