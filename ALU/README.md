@@ -151,7 +151,7 @@ for(a = 0; a<= width -1; a = a + 1)
         if(a == 5'd31)
         begin
             mux_2_1 u(
-                .A(1),
+                .A(data_operandA[width-1]),
                 .B(data_operandA[a]),
                 .sel(ctrl_shiftamt[0]),
                 .out(temp0[a])
