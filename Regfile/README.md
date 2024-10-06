@@ -92,6 +92,14 @@ The 5-32 decoder converts a 5-bit binary input into one of 32 unique outputs, us
 …
 ```   
 ### bufif1_32:
+The bufif1_32bit module implements a 32-bit tri-state buffer, allowing individual bits of the input data data_in to be selectively passed to the output data_out based on the enable signal. Each bit is processed using a bufif1 gate, which connects the corresponding bit of data_in to data_out when enable is high, effectively enabling the output, and disconnects it (high-impedance state) when enable is low. This module uses a generate loop to create 32 instances of the tri-state buffer, facilitating controlled data flow in digital circuits while conserving space and resources.
+```Verilog code(key part)
+ generate
+        for (i = 0; i < 32; i = i + 1) begin : tri_state_buffer
+            bufif1 (data_out[i], data_in[i], enable);
+        end
+    endgenerate
+```
 
 ### Regfile:
 
