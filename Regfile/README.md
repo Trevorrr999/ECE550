@@ -112,7 +112,7 @@ Tri-State Buffers: Two sets of tri-state buffers (bufif1_32bit) to output the co
 #### Decoder:
 The module utilizes three decoders to decode the addresses for writing and reading (Reading_regA and Reading_regB). The outputs of these decoders determine which registers to write to or read from. Additionally, these outputs, combined with the enable signal, control the enable logic of the tri-state buffers, effectively managing the address logic in this design. This approach ensures precise and efficient data access within the register file.
 
-```Verilog code
+```Verilog code(key part)
    decoder_32 uint1 (
     .ctrl_ALUopcode(ctrl_readRegA),
     .decode_ctrl_ALUopcode(decode_ctrl_readRegA)
@@ -129,6 +129,30 @@ The module utilizes three decoders to decode the addresses for writing and readi
 
 #### Register Array:
 This module is constructed using the submodule register_32, instantiated as 32 separate entities. The first register, designated as $0, is always set to store 32'b0, regardless of the data intended for writing. For the other registers, they will read from or write data according to the specified operation instructions, ensuring proper data management and functionality in the register file.
+```verilog code
+ if(i == 0)
+        begin
+        register_32 u
+        (
+            .d(32'b0),
+            .clk(clock),
+            .clr(ctrl_reset),
+            .q(result[i]),
+            .en(Enable[i])
+        );
+        end
+        else
+        begin
+        register_32 u 
+        (
+            .d(data_writeReg),
+            .clk(clock),
+            .clr(ctrl_reset),
+            .q(result[i]),
+            .en(Enable[i])
+        );
+        end
+```
 
 #### Tri-State Buffers:
 The tri-state buffer plays a crucial role in optimizing resource usage for the read control logic. It replaces multiplexers, using the enable signal and the decoder's output to determine which output should be activated. When one array of tri-state buffers is enabled, the others remain inactive, effectively controlling which read data is accessed. This design successfully streamlines the process of managing read operations while conserving resources.
