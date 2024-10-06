@@ -20,19 +20,14 @@ Below is a summary of the main structure and functionality of the code.
 |data_readRegA|Outtput|Data read from the registers (32 bits)|
 |data_readRegB|Output|Data read from the registers (32 bits)|
 ## Contents:
-1. full_adder
 
-2. mux_2_1
+1. dffe
 
-3. adder_8bit_CSA
+2. register_32
 
-4. adder_32_bit
+3. decoder_32
 
-5. decoder_32
-
-6. SLL
-
-7. SRA
+4. bufif1_32
 
 8. Bitwise_and
 
