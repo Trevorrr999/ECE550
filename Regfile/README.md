@@ -113,7 +113,7 @@ Tri-State Buffers: Two sets of tri-state buffers (bufif1_32bit) to output the co
 The module utilizes three decoders to decode the addresses for writing and reading (Reading_regA and Reading_regB). The outputs of these decoders determine which registers to write to or read from. Additionally, these outputs, combined with the enable signal, control the enable logic of the tri-state buffers, effectively managing the address logic in this design. This approach ensures precise and efficient data access within the register file.
 
 ```Verilog code
-decoder_32 uint1 (
+   decoder_32 uint1 (
     .ctrl_ALUopcode(ctrl_readRegA),
     .decode_ctrl_ALUopcode(decode_ctrl_readRegA)
    );
