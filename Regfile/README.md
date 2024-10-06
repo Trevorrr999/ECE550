@@ -156,4 +156,22 @@ This module is constructed using the submodule register_32, instantiated as 32 s
 
 #### Tri-State Buffers:
 The tri-state buffer plays a crucial role in optimizing resource usage for the read control logic. It replaces multiplexers, using the enable signal and the decoder's output to determine which output should be activated. When one array of tri-state buffers is enabled, the others remain inactive, effectively controlling which read data is accessed. This design successfully streamlines the process of managing read operations while conserving resources.
+```Verilog code(key part)
+   for (j = 0; j <= width -1 ; j = j + 1)
+    begin: gen_bufif1_A
+        bufif1_32bit u(
+            .data_in(result[j]),
+            .data_out(data_readRegA),
+            .enable(decode_ctrl_readRegA[j])
+        );
+    end
+        for(k = 0; k <= width -1 ; k = k + 1)
+    begin: gen_bufif1_B
+        bufif1_32bit u(
+            .data_in(result[k]),
+            .data_out(data_readRegB),
+            .enable(decode_ctrl_readRegB[k])
+        );
+    end
+```
 
