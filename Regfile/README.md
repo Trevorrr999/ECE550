@@ -45,7 +45,30 @@ the DFFE module implements a D flip-flop with enable and clear functionalities. 
        end
    end
 ```
+
 ### register_32:
+The register_32 module implements a 32-bit register using an array of D flip-flops, where each bit of the 32-bit input data d is stored in a separate flip-flop. Controlled by the clock signal clk, enable signal en, and clear signal clr, the module allows data storage when en is high and resets all bits to 0 when clr is activated. It generates 32 instances of the dffe_ref flip-flop, ensuring synchronized operation, and provides a 32-bit output q that reflects the stored data based on the input conditions.
+```Verilog code(key part)
+generate
+    for(i = 0; i <=width -1; i = i+1)
+    begin: gen_sys_clk
+        assign clk_sys[i] = clk;
+        assign en_sys [i] = en;
+        assign clr_sys [i] = clr; 
+    end
+	 
+    for(j = 0; j<= width -1; j = j+1)
+    begin: gen_dffe
+        dffe_ref u(
+            .d(d[j]),
+            .clk(clk_sys[j]),
+            .q(q[j]),
+            .en(en_sys[j]),
+            .clr(clr_sys[j])
+        );
+    end
+endgenerate
+```
 
 ### decoder_32:
 The 5-32 decoder converts a 5-bit binary input into one of 32 unique outputs, used for selectively activating an output. Its input range is from 00000 to 11111, corresponding to outputs Y0 to Y31, where only one output is high (1) and the others are low (0). In this design, the decoder_32 is used to converts ctrl_ALUopcode 5 bit inputs into 32 outputs, which is used to decide which result should be connect to the output data ports.
