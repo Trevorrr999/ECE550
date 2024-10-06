@@ -7,6 +7,7 @@
 ## Project introduction:
 This Verilog code implements a 32x32 bit register file, designed for storing and manipulating data in hardware. 
 Below is a summary of the main structure and functionality of the code.
+
 **Inputs and Outputs declaration**
 **Port Name**|**Input/output**|**Description**
 | ---------- | -------------- | --------------- | 
