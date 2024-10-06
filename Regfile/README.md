@@ -102,5 +102,19 @@ The bufif1_32bit module implements a 32-bit tri-state buffer, allowing individua
 ```
 
 ### Regfile:
+regfile module implements a 32-entry register file, allowing for read and write operations on 32-bit registers controlled by various input signals. It features a clock input clock, a write enable signal ctrl_writeEnable, and a reset signal ctrl_reset. The module includes control inputs to specify which registers to read from (ctrl_readRegA, ctrl_readRegB) and write to (ctrl_writeReg), along with a 32-bit data input data_writeReg.
 
+The architecture consists of:
+Decoders: Three 5-to-32 bit decoders to convert the 5-bit register addresses into 32-bit enable signals for reading and writing operations.
+Register Array: An array of 32 registers (register_32), where the first register is initialized to zero, and others can be updated with data_writeReg when enabled.
+Tri-State Buffers: Two sets of tri-state buffers (bufif1_32bit) to output the contents of the registers specified by the read control signals, allowing for simultaneous read operations.
+
+#### Decoder:
+The module utilizes three decoders to decode the addresses for writing and reading (Reading_regA and Reading_regB). The outputs of these decoders determine which registers to write to or read from. Additionally, these outputs, combined with the enable signal, control the enable logic of the tri-state buffers, effectively managing the address logic in this design. This approach ensures precise and efficient data access within the register file.
+
+#### Register Array:
+This module is constructed using the submodule register_32, instantiated as 32 separate entities. The first register, designated as $0, is always set to store 32'b0, regardless of the data intended for writing. For the other registers, they will read from or write data according to the specified operation instructions, ensuring proper data management and functionality in the register file.
+
+#### Tri-State Buffers:
+The tri-state buffer plays a crucial role in optimizing resource usage for the read control logic. It replaces multiplexers, using the enable signal and the decoder's output to determine which output should be activated. When one array of tri-state buffers is enabled, the others remain inactive, effectively controlling which read data is accessed. This design successfully streamlines the process of managing read operations while conserving resources.
 
