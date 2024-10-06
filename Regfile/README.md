@@ -112,6 +112,21 @@ Tri-State Buffers: Two sets of tri-state buffers (bufif1_32bit) to output the co
 #### Decoder:
 The module utilizes three decoders to decode the addresses for writing and reading (Reading_regA and Reading_regB). The outputs of these decoders determine which registers to write to or read from. Additionally, these outputs, combined with the enable signal, control the enable logic of the tri-state buffers, effectively managing the address logic in this design. This approach ensures precise and efficient data access within the register file.
 
+```Verilog code
+decoder_32 uint1 (
+    .ctrl_ALUopcode(ctrl_readRegA),
+    .decode_ctrl_ALUopcode(decode_ctrl_readRegA)
+   );
+   decoder_32 uint2 (
+    .ctrl_ALUopcode(ctrl_readRegB),
+    .decode_ctrl_ALUopcode(decode_ctrl_readRegB)
+   );
+   decoder_32 uint3 (
+    .ctrl_ALUopcode(ctrl_writeReg),
+    .decode_ctrl_ALUopcode(decode_ctrl_writeReg)
+   );
+```
+
 #### Register Array:
 This module is constructed using the submodule register_32, instantiated as 32 separate entities. The first register, designated as $0, is always set to store 32'b0, regardless of the data intended for writing. For the other registers, they will read from or write data according to the specified operation instructions, ensuring proper data management and functionality in the register file.
 
