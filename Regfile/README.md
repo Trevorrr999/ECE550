@@ -32,7 +32,18 @@ Below is a summary of the main structure and functionality of the code.
 5. Regfile
 
 ### dffe:
-
+the DFFE module implements a D flip-flop with enable and clear functionalities. It stores the input data d on the positive edge of the clock clk when the enable signal en is high. If the clear signal clr is activated, it resets the output q to 0. The module initializes q to 0 and ensures that the output reflects the input only when enabled, providing a controlled data storage mechanism in digital circuits.
+```Verilog code(key part)
+   always @(posedge clk or posedge clr) begin
+       //If clear is high, set q to 0
+       if (clr) begin
+           q <= 1'b0;
+       //If enable is high, set q to the value of d
+       end else if (en) begin
+           q <= d;
+       end
+   end
+```
 ### register_32:
 
 ### decoder_32:
