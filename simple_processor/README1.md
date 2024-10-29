@@ -127,7 +127,7 @@ To read from register file, we use **ctrl_readRegA** and **ctrl_readRegB** as in
 
  ><br>This module uses a 2-bit counter to keep track of cycles and toggles the output clock when the counter reaches 3. The reset functionality allows **clk_out** and the counter to be reset to a known state, making it useful in designs requiring synchronized reset behavior.<br><br>
  
- * processor: A module that generates control signals by decoding instructions to identify different operation types (such as R-type instructions, immediate addition, load, and store).
+ * __processor__:  A module that generates control signals by decoding instructions to identify different operation types (such as R-type instructions, immediate addition, load, and store).
 
 | **Parameters**       | **Type** | **Detail**                                   |
 |----------------------|----------|-----------------------------------------------|
@@ -147,7 +147,6 @@ To read from register file, we use **ctrl_readRegA** and **ctrl_readRegB** as in
 | data_readRegA [31:0] | Input    | Data from port A of regfile                  |
 | data_readRegB [31:0] | Input    | Data from port B of regfile                  |
  ><br>The processor uses an ALU for arithmetic operations, supports overflow detection, and writes results back to the register file or data memory, with a specific register $30 handling overflow cases. The program counter increments each cycle to execute instructions sequentially.<br><br>
-## Conclusion
 
 
 
