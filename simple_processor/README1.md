@@ -21,7 +21,8 @@ Processor is the core component of a computer, responsible for interpreting and 
 
 
 ## Project Structure
-![image](https://github.com/user-attachments/assets/54c35959-be4c-41ff-bd5b-82a451b110b8)
+![image](https://github.com/user-attachments/assets/af926bda-5ff6-4ed7-b1fe-800c090fa3e8)
+
 Our processor is based on this schematic diagram, which contains 9 core modules.<br><br>
 
  * __skeleton__: The basic scaffold for connecting each part of the processor.
