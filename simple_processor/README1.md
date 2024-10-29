@@ -126,6 +126,25 @@ To read from register file, we use **ctrl_readRegA** and **ctrl_readRegB** as in
 |clk_out|Output|The output clock|
 
  ><br>This module uses a 2-bit counter to keep track of cycles and toggles the output clock when the counter reaches 3. The reset functionality allows **clk_out** and the counter to be reset to a known state, making it useful in designs requiring synchronized reset behavior.<br><br>
+ 
+ *processor: A module that generates control signals by decoding instructions to identify different operation types (such as R-type instructions, immediate addition, load, and store). The processor uses an ALU for arithmetic operations, supports overflow detection, and writes results back to the register file or data memory, with a specific register $30 handling overflow cases. The program counter increments each cycle to execute instructions sequentially.
+| **Parameters**       | **Type** | **Detail**                                   |
+|----------------------|----------|-----------------------------------------------|
+| clock                | Input    | The master clock                             |
+| reset                | Input    | A reset signal                               |
+| address_imem [11:0]  | Output   | The address of the data to get from imem     |
+| q_imem [31:0]        | Input    | The data from imem                           |
+| address_dmem [11:0]  | Output   | The address of the data to get or put in dmem|
+| data [31:0]          | Output   | The data to write to dmem                    |
+| wren                 | Output   | Write enable for dmem                        |
+| q_dmem [31:0]        | Input    | The data from dmem                           |
+| ctrl_writeEnable     | Output   | Write enable for regfile                     |
+| ctrl_writeReg [4:0]  | Output   | Register to write to in regfile              |
+| ctrl_readRegA [4:0]  | Output   | Register to read from port A of regfile      |
+| ctrl_readRegB [4:0]  | Output   | Register to read from port B of regfile      |
+| data_writeReg [31:0] | Output   | Data to write to regfile                     |
+| data_readRegA [31:0] | Input    | Data from port A of regfile                  |
+| data_readRegB [31:0] | Input    | Data from port B of regfile                  |
 ## Conclusion
 
 
