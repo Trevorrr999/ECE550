@@ -127,7 +127,8 @@ To read from register file, we use **ctrl_readRegA** and **ctrl_readRegB** as in
 
  ><br>This module uses a 2-bit counter to keep track of cycles and toggles the output clock when the counter reaches 3. The reset functionality allows **clk_out** and the counter to be reset to a known state, making it useful in designs requiring synchronized reset behavior.<br><br>
  
- * processor: A module that generates control signals by decoding instructions to identify different operation types (such as R-type instructions, immediate addition, load, and store). 
+ * processor: A module that generates control signals by decoding instructions to identify different operation types (such as R-type instructions, immediate addition, load, and store).
+
 | **Parameters**       | **Type** | **Detail**                                   |
 |----------------------|----------|-----------------------------------------------|
 | clock                | Input    | The master clock                             |
